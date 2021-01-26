@@ -1,6 +1,6 @@
 <template>
   <div class="gs-search">
-    <form action="GET" class="gs-form" autocomplete="off" v-on:submit.prevent="doSubmit">
+    <form method="get" action="./" class="gs-form" autocomplete="off" v-on:submit.prevent="doSubmit" ref="gsForm">
       <input v-model="search" 
         ref="gsInput"
         @keyup="lazySearch" 
@@ -8,7 +8,8 @@
         @keyup.down="touchIndex(-1)"
         @blur="calcShowHistory()"
         @focus="calcShowHistory()"
-        class="gs-input" placeholder="소환사명, 챔피언 ...">
+        class="gs-input" placeholder="소환사명, 챔피언 ..."
+        name="search">
       <button type="submit" class="gs-submit">검색</button>
     </form>
 
@@ -96,6 +97,7 @@ export default {
     doSubmit() {
       this.$$storage.switchDB('history').update(this.search)
       this.$refs.history.update()
+      this.$refs.gsForm.submit()
     },
     /**
      * 소환사명을 검색하여 결과값을 출력합니다.
