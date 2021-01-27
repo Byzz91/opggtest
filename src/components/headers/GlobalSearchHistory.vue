@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import Storage from '../../classes/Storage'
+import Storage from '../../common/Storage'
 
 export default {
   name: 'GlobalSearchHistory',
@@ -134,8 +134,6 @@ export default {
         default:
       }
     }
-  },
-  computed: {
   },
   created() {
     this.currentTab = this.TAB_HISTORY

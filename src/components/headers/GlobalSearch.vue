@@ -27,10 +27,10 @@
 
 <script>
 import { debounce } from 'lodash'
-import { SUMMONER_INFO } from '../../classes/opgg.consts'
+import API from '../../common/api'
 import GlobalSearchResult from './GlobalSearchResult.vue'
 import GlobalSearchHistory from './GlobalSearchHistory.vue'
-import Storage from '../../classes/Storage'
+import Storage from '../../common/Storage'
 
 export default {
   name: 'GlobalSearch',
@@ -105,7 +105,6 @@ export default {
      */
     lazySearch: debounce(function (e) {
       let value = e.target.value
-      let endpoint = ''
 
       // 화살키에 2개 Up(`38`), Down(`40`)에 대해서는 `escape` 처리합니다.
       if (e.which == 38 || e.which == 40) {
@@ -115,14 +114,10 @@ export default {
       this.searchResult = []
 
       if (value.length) {
-        endpoint = SUMMONER_INFO.replace('{summonerName}', encodeURIComponent(value))
-
-        fetch(endpoint)
-          .then(response => response.json())
-          .then(data => {
-            this.searchResult.push(data.summoner)
-            this.calcShowHistory()
-          })
+        API.getSummonerInfo(value).then(res => {
+          this.searchResult.push(res.summoner)
+          this.calcShowHistory()
+        })
       }
     }, 400),
     /**
@@ -130,7 +125,7 @@ export default {
      * @return bool
      */
     calcShowHistory() {
-      if (this.searchResult.length == 0 && this.$refs.gsInput === document.activeElement) {
+      if (this.searchResult.length == 0 /*&& this.$refs.gsInput === document.activeElement*/) {
         this.showHistory = true
       } else {
         this.showHistory = false
