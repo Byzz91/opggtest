@@ -148,6 +148,8 @@ export default {
 
 <style lang="scss" scope>
 .gs-history {
+  position: relative;
+  z-index: 99;
   border-radius: 2px;
   background-color: #fff;
   box-shadow: 0 2px 4px 0 rgb(0 0 0 / 50%);
