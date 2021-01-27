@@ -15,8 +15,12 @@
       <win-rates v-if="mostChamp" :mostChamp="mostChamp"></win-rates>
     </aside>
     
-    <div class="contents">
+    <div class="contents" v-show="summonerMatches" v-if="summonerMatches">
       <match-overview v-if="summonerMatches" :matches="summonerMatches"></match-overview>
+
+      <match-preview v-for="(match, index) in summonerMatches.games"
+        :match="match"
+        :key="index"></match-preview>
     </div>
   </div>
 </template>
@@ -30,6 +34,7 @@ import RankBox from './components/aside/RankBox.vue'
 import API from './common/api'
 import WinRates from './components/aside/WinRates.vue'
 import MatchOverview from './components/tops/MatchOverview.vue'
+import MatchPreview from './components/contents/MatchPreview.vue'
 
 export default {
   name: 'Summoner',
@@ -41,6 +46,7 @@ export default {
     RankBox,
     WinRates,
     MatchOverview,
+    MatchPreview,
   },
   data() {
     return {
