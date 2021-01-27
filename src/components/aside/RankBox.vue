@@ -11,13 +11,13 @@
         <em class="lp">{{ league.tierRank.lp }} LP</em>
         <span class="winloss">{{ league.wins }}승 {{ league.losses }}패</span>
       </span>
-      <span class="rows winrate">승률 {{ Math.ceil((league.wins / (league.wins + league.losses)) * 100) }}%</span>
+      <span class="rows winrate">승률 {{ Math.round((league.wins / (league.wins + league.losses)) * 100) }}%</span>
     </div>
   </div>
 </template>
 
 <script>
-import { numberFormat } from '../../classes/Utils'
+import { numberFormat } from '../../common/utils'
 
 export default {
   name: 'RankBox',
@@ -51,6 +51,7 @@ export default {
   }
   .text-info {
     float: left;
+    margin-top: 5px;
     
     .rows {
       display: block;

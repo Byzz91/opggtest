@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { numberFormat, purifyName } from '../../classes/Utils'
+import { numberFormat, purifyName } from '../../common/utils'
 
 export default {
   name: 'SummonerProfile',

@@ -12,8 +12,12 @@
   <div class="container">
     <aside class="sidebar">
       <rank-box v-if="summonerProfile" :summoner="summonerProfile"></rank-box>
+      <win-rates v-if="mostChamp" :mostChamp="mostChamp"></win-rates>
     </aside>
     
+    <div class="contents">
+      <match-overview v-if="summonerMatches" :matches="summonerMatches"></match-overview>
+    </div>
   </div>
 </template>
 
@@ -23,7 +27,9 @@ import AppTop from './components/AppTop.vue'
 import GlobalSearch from './components/headers/GlobalSearch.vue'
 import SummonerProfile from './components/tops/SummonerProfile.vue'
 import RankBox from './components/aside/RankBox.vue'
-import { SUMMONER_INFO } from '../src/classes/opgg.consts'
+import API from './common/api'
+import WinRates from './components/aside/WinRates.vue'
+import MatchOverview from './components/tops/MatchOverview.vue'
 
 export default {
   name: 'Summoner',
@@ -33,43 +39,53 @@ export default {
     GlobalSearch,
     SummonerProfile,
     RankBox,
+    WinRates,
+    MatchOverview,
   },
   data() {
     return {
       /**
        * 검색 문자열
        */
-      search: '',
+      summonerName: '',
       /**
-       * 검색된 서머너의 이름
+       * 검색된 서머너의 프로필 데이터
        */
       summonerProfile: undefined,
+      /**
+       * mostChamp
+       */
+      mostChamp: undefined,
+      /**
+       * summonerMatches
+       */
+      summonerMatches: undefined,
     }
   },
   methods: {
-    /**
-     * 서머너의 관련된 정보를 가져옵니다.
-     */
-    getSummonerProfile() {
-      let endpoint = SUMMONER_INFO.replace('{summonerName}', encodeURIComponent(this.search))
-
-      fetch(endpoint)
-        .then(response => response.json())
-        .then(data => {
-            console.log('data.summoner', data.summoner)
-            this.summonerProfile = data.summoner
-          })
-    }
   },
   created() {
     let capture = /search=(.*)/.exec(window.location.search)
 
     if (capture != null) {
-      this.search = capture[1]
+      this.summonerName = capture[1]
     }
   },
-  mounted() {
-    this.getSummonerProfile()
+  beforeMount() {
+    API.getSummonerInfo(this.summonerName).then(res => {
+      console.log('App.vue.summonerInfo', res.summoner)
+      this.summonerProfile = res.summoner
+    })
+
+    API.getMostChamp(this.summonerName).then(res => {
+      console.log('App.vue.mostInfo', res)
+      this.mostChamp = res
+    })
+
+    API.getSummonerMatches(this.summonerName).then(res => {
+      console.log('App.vue.matches', res)
+      this.summonerMatches = res
+    })
   }
 }
 </script>
@@ -84,6 +100,9 @@ h1, h2, h3, h4, ul, li, form, input {
   margin: 0;
   padding: 0;
 }
+ul, li {
+  list-style-type: none;
+}
 .container {
   position: relative;
   width: 1000px;
@@ -97,6 +116,10 @@ h1, h2, h3, h4, ul, li, form, input {
 .sidebar {
   width: 300px;
   margin-right: 10px;
+  float: left;
 }
-
+.contents {
+  float: left;
+  width: calc(100% - 300px - 10px);
+}
 </style>
